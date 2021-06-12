@@ -62,7 +62,7 @@ public class UserServiceImp implements com.example.service.UserService {
                    roles.add(roleDao.getRoleByName(role));
                } else {
                    Role newRole = new Role();
-                   newRole.setRole (role);
+                   newRole.setName(role);
                    roleDao.addRole(newRole);
                    roles.add(newRole);
                }

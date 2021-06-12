@@ -22,7 +22,7 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
-    private String role;
+    private String name;
 
    @Transient
    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
@@ -30,7 +30,7 @@ public class Role implements GrantedAuthority {
 
     public Role(Long id, String role) {
         this.id = id;
-        this.role = role;
+        this.name = role;
     }
 
     public Role(){};
@@ -43,12 +43,12 @@ public class Role implements GrantedAuthority {
         this.id = id;
     }
 
-    public String getRole() {
-        return role;
+    public String getName() {
+        return name;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setName(String role) {
+        this.name = role;
     }
 
     public Collection<User> getUsers() {
@@ -61,6 +61,6 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return role;
+        return name;
     }
 }
