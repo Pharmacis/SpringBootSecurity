@@ -8,10 +8,7 @@ public interface RoleDao {
     void addRole(Role role);
     Role getRoleByName(String name);
     Role update(Role role);
-    Long countRoles(String name);
     List<String> getRoles();
-    List <Role> listRolesByUser(Long userId);
-
 
 
 }

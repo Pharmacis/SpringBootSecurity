@@ -26,7 +26,6 @@ public class HelloController {
 
     @GetMapping("/")
     public String getUsers(Model model){
-       // model.addAttribute ("list_users",userService.listUsersWithRoles ());
         return "startPage";
     }
 

@@ -6,31 +6,29 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 // Этот класс реализует интерфейс GrantedAuthority, в котором необходимо переопределить только один метод getAuthority() (возвращает имя роли).
 // Имя роли должно соответствовать шаблону: «ROLE_ИМЯ», например, ROLE_USER.
 
 @Entity
-@Table
+@Table(name = "role_cs")
 public class Role implements GrantedAuthority {
+
     @Id
-    @Column
+    @Column(name= "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String name;
 
-   @Transient
+    @Column(name= "role",unique = true)
+    private String role;
+
    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     private Set<User> users;
 
     public Role(Long id, String role) {
         this.id = id;
-        this.name = role;
+        this.role = role;
     }
 
     public Role(){};
@@ -44,11 +42,11 @@ public class Role implements GrantedAuthority {
     }
 
     public String getName() {
-        return name;
+        return role;
     }
 
     public void setName(String role) {
-        this.name = role;
+        this.role = role;
     }
 
     public Collection<User> getUsers() {
@@ -58,9 +56,22 @@ public class Role implements GrantedAuthority {
     public void setUsers(Set<User> users) {
         this.users = users;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Role)) return false;
+        Role role = (Role) o;
+        return getId ().equals (role.getId ()) &&
+                Objects.equals (getName (), role.getName ());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash (getId (), getName ());
+    }
 
     @Override
     public String getAuthority() {
-        return name;
+        return role;
     }
 }

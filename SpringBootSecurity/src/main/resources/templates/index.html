@@ -51,7 +51,7 @@
         <td>
             <th:block th:each="lu : ${list_users}">
                 <th:block th:each="role : ${lu.getRoles()}">
-                    <p th:text ="${role.getRole()}"></p>
+                    <p th:text ="${role.getName()}"></p>
                 </th:block>
             </th:block>
         </td>

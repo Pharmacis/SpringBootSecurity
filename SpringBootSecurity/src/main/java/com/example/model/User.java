@@ -1,6 +1,4 @@
 package com.example.model;
-
-import com.sun.istack.internal.NotNull;
 import org.hibernate.Hibernate;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,10 +8,11 @@ import com.example.service.UserService;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table
+@Table(name = "user_cs")
 public class User implements UserDetails {
 
     @Id
@@ -24,13 +23,13 @@ public class User implements UserDetails {
     @Column(name = "login", unique = true)
     private String login;
 
-    @Column
+    @Column(name = "userName")
     private String userName;
 
-    @Column
+    @Column(name = "profession")
     private String profession;
 
-    @Column
+    @Column(name = "age")
     private int age;
 
     @Column(name = "password")
@@ -38,6 +37,10 @@ public class User implements UserDetails {
 
     @ManyToMany(fetch = FetchType.LAZY,
           cascade = {CascadeType.PERSIST,CascadeType.DETACH, CascadeType.MERGE,CascadeType.REFRESH})
+    @JoinTable(name ="user_cs_role_cs",
+            joinColumns = @JoinColumn(name = "users_id"),
+            inverseJoinColumns = @JoinColumn(name = "roles_id")
+    )
     private Set<Role> roles;
 
     public User() {
@@ -139,6 +142,24 @@ public class User implements UserDetails {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return getAge () == user.getAge () &&
+                getId ().equals (user.getId ()) &&
+                Objects.equals (getLogin (), user.getLogin ()) &&
+                Objects.equals (getUserName (), user.getUserName ()) &&
+                Objects.equals (getProfession (), user.getProfession ()) &&
+                Objects.equals (getPassword (), user.getPassword ());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash (getId (), getLogin (), getUserName (), getProfession (), getAge (), getPassword ());
     }
 
     @Override

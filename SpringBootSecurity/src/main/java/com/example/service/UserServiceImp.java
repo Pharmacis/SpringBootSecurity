@@ -44,32 +44,6 @@ public class UserServiceImp implements com.example.service.UserService {
         this.roleDao = roleDao;
     }
 
-
-    @Transactional
-    @Override
-    public void addUserAndHisRoles (User user,List<String> rolesValues){
-        user.setPassword (bCryptPasswordEncoder.encode (user.getPassword ()));
-        addListOfRolesForUser (user,rolesValues);
-        userDao.add (user);
-    }
-
-     @Transactional
-     @Override
-     public void addListOfRolesForUser(User user, List<String> rolesValues) {
-        Set<Role> roles = new HashSet<> ();
-        for (String role: rolesValues) {
-               if (roleDao.countRoles (role)!=0) {
-                   roles.add(roleDao.getRoleByName(role));
-               } else {
-                   Role newRole = new Role();
-                   newRole.setName(role);
-                   roleDao.addRole(newRole);
-                   roles.add(newRole);
-               }
-        }
-        user.setRoles(roles);
-    }
-
     @Transactional
     @Override
     public List<String> getRoles() {
@@ -84,40 +58,16 @@ public class UserServiceImp implements com.example.service.UserService {
 
     @Transactional
     @Override
-    public List<User> listUsers () {
-            return userDao.listUsers ();
-        }
-
-    @Transactional
-    @Override
-    public void delete (User user){
-        userDao.delete (user);
-    }
-
-    @Transactional
-    @Override
     public void deleteById(Long id) {
         userDao.deleteById (id);
     }
 
-
     @Transactional
     @Override
     public User updateUserAndHisRoles(User user, List<String> rolesValues) {
-        addListOfRolesForUser (user, rolesValues);
+        userDao.setRoleByListNameRole (user,rolesValues);
         user.setPassword (bCryptPasswordEncoder.encode (user.getPassword ()));
         return userDao.update (user);
-    }
-
-    @Transactional
-    @Override
-    public boolean tableIsEmpty() {
-        try {
-            userDao.tableIsEmpty ();
-        } catch (java.lang.NullPointerException e) {
-            return false;
-        }
-        return true;
     }
 
     @Transactional
@@ -128,14 +78,16 @@ public class UserServiceImp implements com.example.service.UserService {
 
     @Transactional
     @Override
-    public List<User> listUsersWithRoles2() {
-        List<User> users = userDao.listUsers ();
-        for (User user : users) {
-            if (user.getRoles ().iterator ().hasNext ()) {
-                user.getRoles ().iterator ().next ();
-            }
-        }
-        return users;
+    public User addUserWithRoles(User user, List<String> roles) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userDao.setRoleByListNameRole (user,roles);
+        userDao.add (user);
+        return user;
     }
+
+
+
+
+
 
 }
